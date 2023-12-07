@@ -1,5 +1,6 @@
 import re
 import os
+import sys
 import time
 import json
 import base64
@@ -463,4 +464,5 @@ def main(uid:str):
         print(f'获取资料出错，错误：{err}')
 
 if __name__ == '__main__':
-    main('231880291')
+    # 从外部接收 uid
+    main(sys.argv[1])
