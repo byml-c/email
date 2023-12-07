@@ -1,0 +1,18 @@
+2023-12-07 12:28:41,475 [ERROR] (read_admin_data: 372): 统一身份认证失败，错误：Data must be padded to 16 byte boundary in CBC mode
+2023-12-07 12:29:24,285 [ERROR] (get_url: 246): 资料获取失败，登录信息失效，服务器返回：{'code': '9100', 'msg': '未登录或会话已失效', 'data': None}
+2023-12-07 12:29:24,286 [ERROR] (fetch_data: 403): 学生 231880291 下载出错，错误：登录失效
+2023-12-07 18:48:31,241 [ERROR] (read_admin_data: 378): 统一身份认证失败，错误：Data must be padded to 16 byte boundary in CBC mode
+2023-12-07 18:48:46,914 [ERROR] (read_admin_data: 378): 统一身份认证失败，错误：Data must be padded to 16 byte boundary in CBC mode
+2023-12-07 18:49:34,887 [INFO] (login: 223): 200: 
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel="shortcut icon" type=image/x-icon href=static/favicon.ico><title>自助打印管理端</title><link href=/wec-self-print-app-console/static/css/app.4d3f945a03ce7027ea5537a4005f1265.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=/wec-self-print-app-console/static/js/manifest.e7161fd86b495f904e12.1687931925172.js></script><script type=text/javascript src=/wec-self-print-app-console/static/js/vendor.f234da85cb52d227bf53.1687931925172.js></script><script type=text/javascript src=/wec-self-print-app-console/static/js/app.aad54d8e739cdb800c06.1687931925172.js></script></body></html>
+2023-12-07 18:49:34,898 [ERROR] (get_url: 252): 资料获取失败，登录信息失效，服务器返回：{'code': '9100', 'msg': '未登录或会话已失效', 'data': None}
+2023-12-07 18:49:34,898 [ERROR] (fetch_data: 409): 学生 231880291 下载出错，错误：登录失效
+2023-12-07 19:20:36,963 [INFO] (login: 223): 200: 
+<!DOCTYPE html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel="shortcut icon" type=image/x-icon href=static/favicon.ico><title>自助打印管理端</title><link href=/wec-self-print-app-console/static/css/app.4d3f945a03ce7027ea5537a4005f1265.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=/wec-self-print-app-console/static/js/manifest.e7161fd86b495f904e12.1687931925172.js></script><script type=text/javascript src=/wec-self-print-app-console/static/js/vendor.f234da85cb52d227bf53.1687931925172.js></script><script type=text/javascript src=/wec-self-print-app-console/static/js/app.aad54d8e739cdb800c06.1687931925172.js></script></body></html>
+2023-12-07 19:20:36,977 [ERROR] (get_url: 254): 资料获取失败，错误：未登录或会话已失效，服务器返回：{'code': '9100', 'msg': '未登录或会话已失效', 'data': None}
+2023-12-07 19:20:36,978 [ERROR] (fetch_data: 417): 学生 231880291 下载出错，错误：登录失效，服务器报错：未登录或会话已失效
+2023-12-07 19:22:15,984 [ERROR] (get_url: 252): 资料获取失败，错误：未登录或会话已失效，服务器返回：{'code': '9100', 'msg': '未登录或会话已失效', 'data': None}
+2023-12-07 19:22:15,985 [ERROR] (fetch_data: 415): 学生 231880291 下载出错，错误：登录失效，服务器报错：未登录或会话已失效
+2023-12-07 20:03:26,662 [ERROR] (store_file: 411): 学生 231880291 的资料文件 a.html 写入出错，错误：[WinError 3] 系统找不到指定的路径。: './files/231880291'
+2023-12-07 20:04:46,849 [ERROR] (store_file: 411): 学生 231880291 的资料文件 a.html 写入出错，错误：a bytes-like object is required, not 'Response'
+2023-12-07 20:20:44,863 [ERROR] (store_file: 424): 学生 231880291 的资料文件 a 写入出错，错误：No connection adapters were found for 'file:///D:\\Study\\NOVA\\实践-邮件发送\\x.zip'
