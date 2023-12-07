@@ -1,9 +1,11 @@
 import re
+import os
 import time
 import json
 import base64
 import random
 import string
+import zipfile
 import logging
 import requests
 
@@ -220,6 +222,10 @@ class printer:
         self.session.get(
             'http://zzfwx.nju.edu.cn/wec-self-print-app-console/admin/login/IDS?&returnUrl=/')
 
+    @staticmethod
+    def compare_name(name_1, name_2):
+        return name_1 == name_2
+
     def get_url(self, item_name:str, stu_id:int, stu_name:str):
         '''
             获取 stu_id（学号）对应 item_name 类型的材料
@@ -258,8 +264,9 @@ class printer:
             raise Exception('学号错误')
         
         # 学生姓名与系统获取姓名不匹配，则退出
-        if not name_list[0]['NAME'] == stu_name:
-            log.logger.error(f'资料获取失败，学号为 {stu_id} 的学生 {stu_name} 填写姓名与获取姓名不匹配')
+        if not self.compare_name(name_list[0]['NAME'], stu_name):
+            log.logger.error(f'''资料获取失败，学号为 {stu_id} 的学生\
+                填写姓名 "{stu_name}" 与获取姓名 "{name_list[0]['NAME']}" 不匹配''')
             raise Exception('姓名错误')
 
         json_data = {
@@ -292,8 +299,8 @@ class printer:
             res_3 = self.session.get(url=url, verify=False)
             download_url = res_3.json()['downloadUrl']
             if download_url != None:
-                # 返回下载链接
                 return download_url
+        
         # 30s 仍然无法获得下载链接，结束并返回获取失败
         log.logger.error('资料下载失败，获取下载链接轮询超时')
         raise Exception('资料下载失败，获取下载链接超时')
@@ -305,24 +312,24 @@ class fetcher:
     user_data = {}
     admin_path = './admin.config'
     user_data_path = './data/{}.dat'
-    user_file_path = './files/{}/{}'
+    user_file_path = './files/{}/'
 
     # 从表格多选项到下载内容的映射
     download_map = {
         '中英文在学证明': [
-            {'name': '中英文在学证明', 'file': '中英文在学证明.zip'}
+            {'name': '中英文在学证明', 'file': '中英文在学证明'}
         ],
         '中文电子成绩单': [
-            {'name': '中文电子成绩单', 'file': '中文电子成绩单.zip'}
+            {'name': '中文电子成绩单', 'file': '中文电子成绩单'}
         ],
         '英文成绩单': [
-            {'name': '英文电子成绩单', 'file': '英文电子成绩单.zip'}
+            {'name': '英文电子成绩单', 'file': '英文电子成绩单'}
         ],
         '本科学位证明': [
-            {'name': '本科学位证明', 'file': '本科学位证明.zip'}
+            {'name': '本科学位证明', 'file': '本科学位证明'}
         ],
         '本科毕业证明': [
-            {'name': '本科毕业证明', 'file': '本科毕业证明.zip'}
+            {'name': '本科毕业证明', 'file': '本科毕业证明'}
         ]
     }
 
@@ -390,12 +397,31 @@ class fetcher:
         '''
 
         try:
-            file_data = self.auth.session.get(url)
-            with open(
-                self.user_file_path.format(self.uid, file_name),
-                'wb'
-            ) as file:
-                file.write(file_data)
+            # 验证并新建文件夹
+            if not os.path.exists(f'./files/{self.uid}'):
+                os.mkdir(f'./files/{self.uid}')
+
+            # 写入内容
+            # file_data = self.auth.session.get(url).content
+            file_path = self.user_file_path.format(self.uid)
+            # with open(f'{file_path+file_name}.zip', 'wb') as file:
+            #     file.write(file_data)
+            
+            # 解压缩
+            zip_file = zipfile.ZipFile(f'{file_path+file_name}.zip', 'r')
+
+            # 判断压缩文件是否为空
+            if len(zip_file.namelist()) < 1:
+                log.logger.error(f'解压出错，压缩文件位置：{file_path+file_name}.zip')
+                Exception('解压出错，压缩文件为空')
+            
+            # 解压首个文件
+            file = zip_file.namelist()[0]
+            zip_file.extract(file, file_path)
+            zip_file.close()
+            # 修改文件名
+            os.rename(file_path+file, f'{file_path+file_name}.pdf')
+            os.remove(f'{file_path+file_name}.zip')
         except Exception as err:
             log.logger.error(f'学生 {self.uid} 的资料文件 {file_name} 写入出错，错误：{err}')
             raise Exception(f'文件写入出错，错误：{err}')
@@ -420,10 +446,20 @@ def main(uid:str):
     '''
         主函数，根据 uid 获取学生数据
     '''
-
+    
+    # 补全缺少的文件夹
+    if not os.path.exists('./files'):
+        os.mkdir('files')
+    if not os.path.exists('./data'):
+        os.mkdir('data')
+    if not os.path.exists('./log'):
+        os.mkdir('log')
+    
+    # 开始运行程序
     try:
         fetcher_obj = fetcher(uid)
-        fetcher_obj.fetch_data()
+        fetcher_obj.store_file('', 'a')
+        # fetcher_obj.fetch_data()
     except Exception as err:
         print(f'获取资料出错，错误：{err}')
 

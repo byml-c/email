@@ -402,10 +402,10 @@ class fetcher:
                 os.mkdir(f'./files/{self.uid}')
 
             # 写入内容
-            # file_data = self.auth.session.get(url).content
+            file_data = self.auth.session.get(url).content
             file_path = self.user_file_path.format(self.uid)
-            # with open(f'{file_path+file_name}.zip', 'wb') as file:
-            #     file.write(file_data)
+            with open(f'{file_path+file_name}.zip', 'wb') as file:
+                file.write(file_data)
             
             # 解压缩
             zip_file = zipfile.ZipFile(f'{file_path+file_name}.zip', 'r')
@@ -458,8 +458,7 @@ def main(uid:str):
     # 开始运行程序
     try:
         fetcher_obj = fetcher(uid)
-        fetcher_obj.store_file('', 'a')
-        # fetcher_obj.fetch_data()
+        fetcher_obj.fetch_data()
     except Exception as err:
         print(f'获取资料出错，错误：{err}')
 
