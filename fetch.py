@@ -402,23 +402,25 @@ class fetcher:
                 os.mkdir(f'./files/{self.uid}')
 
             # 写入内容
-            file_data = self.auth.session.get(url).content
+            # file_data = self.auth.session.get(url).content
             file_path = self.user_file_path.format(self.uid)
-            with open(f'{file_path+file_name}.zip', 'wb') as file:
-                file.write(file_data)
+            # with open(f'{file_path+file_name}.zip', 'wb') as file:
+            #     file.write(file_data)
             
             # 解压缩
-            zip_file = zipfile.ZipFile(f'{file_path}.zip', 'r')
+            zip_file = zipfile.ZipFile(f'{file_path+file_name}.zip', 'r')
 
             # 判断压缩文件是否为空
             if len(zip_file.namelist()) < 1:
                 log.logger.error(f'解压出错，压缩文件位置：{file_path+file_name}.zip')
                 Exception('解压出错，压缩文件为空')
             
-            # 解压缩首个文件
+            # 解压首个文件
             file = zip_file.namelist()[0]
             zip_file.extract(file, file_path)
-            os.rename(file_path+file, file_path+file_name)
+            zip_file.close()
+            # 修改文件名
+            os.rename(file_path+file, f'{file_path+file_name}.pdf')
             os.remove(f'{file_path+file_name}.zip')
         except Exception as err:
             log.logger.error(f'学生 {self.uid} 的资料文件 {file_name} 写入出错，错误：{err}')
@@ -456,7 +458,7 @@ def main(uid:str):
     # 开始运行程序
     try:
         fetcher_obj = fetcher(uid)
-        fetcher_obj.store_file(r'file:///D:\Study\NOVA\实践-邮件发送\x.zip', 'a')
+        fetcher_obj.store_file('', 'a')
         # fetcher_obj.fetch_data()
     except Exception as err:
         print(f'获取资料出错，错误：{err}')

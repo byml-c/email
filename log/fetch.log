@@ -16,3 +16,10 @@
 2023-12-07 20:03:26,662 [ERROR] (store_file: 411): 学生 231880291 的资料文件 a.html 写入出错，错误：[WinError 3] 系统找不到指定的路径。: './files/231880291'
 2023-12-07 20:04:46,849 [ERROR] (store_file: 411): 学生 231880291 的资料文件 a.html 写入出错，错误：a bytes-like object is required, not 'Response'
 2023-12-07 20:20:44,863 [ERROR] (store_file: 424): 学生 231880291 的资料文件 a 写入出错，错误：No connection adapters were found for 'file:///D:\\Study\\NOVA\\实践-邮件发送\\x.zip'
+2023-12-07 20:25:29,233 [ERROR] (store_file: 424): 学生 231880291 的资料文件 a 写入出错，错误：HTTPSConnectionPool(host='github.com', port=443): Max retries exceeded with url: /byml-c/email/blob/main/x.zip (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1006)')))
+2023-12-07 20:26:14,573 [ERROR] (store_file: 424): 学生 231880291 的资料文件 a 写入出错，错误：No connection adapters were found for 'blob:https://github.com/a273ea4b-1ce3-45d7-81e4-972af55e88ba'
+2023-12-07 20:26:22,533 [ERROR] (store_file: 424): 学生 231880291 的资料文件 a 写入出错，错误：HTTPSConnectionPool(host='github.com', port=443): Max retries exceeded with url: /a273ea4b-1ce3-45d7-81e4-972af55e88ba (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1006)')))
+2023-12-07 20:27:36,329 [ERROR] (store_file: 424): 学生 231880291 的资料文件 a 写入出错，错误：HTTPSConnectionPool(host='github.com', port=443): Max retries exceeded with url: /byml-c/email/blob/main/x.zip (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1006)')))
+2023-12-07 20:29:27,555 [ERROR] (store_file: 424): 学生 231880291 的资料文件 a 写入出错，错误：[Errno 2] No such file or directory: './files/231880291/.zip'
+2023-12-07 20:30:27,086 [ERROR] (store_file: 424): 学生 231880291 的资料文件 a 写入出错，错误：[WinError 32] 另一个程序正在使用此文件，进程无法访问。: './files/231880291/a.zip'
+2023-12-07 20:31:19,497 [ERROR] (store_file: 427): 学生 231880291 的资料文件 a 写入出错，错误：[WinError 183] 当文件已存在时，无法创建该文件。: './files/231880291/admin.config' -> './files/231880291/a.pdf'
