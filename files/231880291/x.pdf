@@ -427,7 +427,7 @@ class fetcher:
             file = zip_file.namelist()[0]
             zip_file.extract(file, file_path)
             zip_file.close()
-
+            
             # 修改文件名，并删除压缩包
             os.rename(file_path+file, pdf_path)
             os.remove(zip_path)
