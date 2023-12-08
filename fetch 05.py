@@ -175,19 +175,15 @@ class authserver:
             'dllt': 'userNamePasswordLogin',
         }
         
-        try:
-            login_url = 'https://authserver.nju.edu.cn/authserver/login'
-            res = self.session.post(url=login_url, data=form, allow_redirects=False)
-            
-            if res.status_code == 302:
-                return self.session
-            else:
-                log.logger.error(f'登录失败，请检查用户名和密码是否正确，\
-                                服务器返回值：{res.status_code}')
-                raise Exception('登录失败，请检查用户名和密码是否正确')
-        except requests.Timeout:
-            log.logger.error('登录失败，请求超时')
-            raise Exception('登录失败，请求超时，请检查网络连接')
+        login_url = 'https://authserver.nju.edu.cn/authserver/login'
+        res = self.session.post(url=login_url, data=form, allow_redirects=False)
+        
+        if res.status_code == 302:
+            return self.session
+        else:
+            log.logger.error(f'登录失败，请检查用户名和密码是否正确，\
+                             服务器返回值：{res.status_code}')
+            raise Exception('登录失败，请检查用户名和密码是否正确')
 
 class printer:
     session = None
@@ -240,79 +236,75 @@ class printer:
             stu_name: 学生中文姓名
         '''
 
-        try:
-            params = {
-                # 选择的证明文件种类，每一种都有固定的
-                'itemId': self.id_map[item_name],
-                # 代表导出方案为单个导出
-                'schemeId': '1166533502928420866',
-                # 学号
-                'ID': stu_id,
-                'pageNumber': '1',
-                'pageSize': '10',
-            }
+        params = {
+            # 选择的证明文件种类，每一种都有固定的
+            'itemId': self.id_map[item_name],
+            # 代表导出方案为单个导出
+            'schemeId': '1166533502928420866',
+            # 学号
+            'ID': stu_id,
+            'pageNumber': '1',
+            'pageSize': '10',
+        }
 
-            # 验证学号是否正确
-            res_1 = self.session.get(
-                'http://zzfwx.nju.edu.cn/wec-self-print-app-console/item/sp-batch-export/item/user/page',
-                params=params, verify=False
-            )
-            
-            res_1 = res_1.json()
-            # 登录失败则返回的 data 为空
-            if not res_1['data']:
-                log.logger.error(f'''资料获取失败，错误：{res_1['msg']}，服务器返回：{res_1}''')
-                raise Exception(f'''登录失效，服务器报错：{res_1['msg']}''')
-            
-            name_list = res_1['data']['records']
-            if name_list == []:
-                log.logger.error(f'资料获取失败，未查询到学号 {stu_id} 对应的学生 {stu_name}')
-                raise Exception('学号错误')
-            
-            # 学生姓名与系统获取姓名不匹配，则退出
-            if not self.compare_name(name_list[0]['NAME'], stu_name):
-                log.logger.error(f'''资料获取失败，学号为 {stu_id} 的学生\
-                    填写姓名 "{stu_name}" 与获取姓名 "{name_list[0]['NAME']}" 不匹配''')
-                raise Exception('姓名错误')
+        # 验证学号是否正确
+        res_1 = self.session.get(
+            'http://zzfwx.nju.edu.cn/wec-self-print-app-console/item/sp-batch-export/item/user/page',
+            params=params, verify=False
+        )
+        
+        res_1 = res_1.json()
+        # 登录失败则返回的 data 为空
+        if not res_1['data']:
+            log.logger.error(f'''资料获取失败，错误：{res_1['msg']}，服务器返回：{res_1}''')
+            raise Exception(f'''登录失效，服务器报错：{res_1['msg']}''')
+        
+        name_list = res_1['data']['records']
+        if name_list == []:
+            log.logger.error(f'资料获取失败，未查询到学号 {stu_id} 对应的学生 {stu_name}')
+            raise Exception('学号错误')
+        
+        # 学生姓名与系统获取姓名不匹配，则退出
+        if not self.compare_name(name_list[0]['NAME'], stu_name):
+            log.logger.error(f'''资料获取失败，学号为 {stu_id} 的学生\
+                填写姓名 "{stu_name}" 与获取姓名 "{name_list[0]['NAME']}" 不匹配''')
+            raise Exception('姓名错误')
 
-            json_data = {
-                'itemId': self.id_map[item_name],
-                'itemName': item_name,
-                'users': [
-                    {
-                        'id': name_list[0]['ID'],
-                        'name': name_list[0]['NAME'],
-                    },
-                ],
-                'groupUserIds': '',
-                'singleUserCount': '50',
-                'schemeId': '1166533502928420866',
-                'groupBy': ''
-            }
+        json_data = {
+            'itemId': self.id_map[item_name],
+            'itemName': item_name,
+            'users': [
+                {
+                    'id': name_list[0]['ID'],
+                    'name': name_list[0]['NAME'],
+                },
+            ],
+            'groupUserIds': '',
+            'singleUserCount': '50',
+            'schemeId': '1166533502928420866',
+            'groupBy': ''
+        }
 
-            # 获取任务 id
-            res_2 = self.session.post(
-                'http://zzfwx.nju.edu.cn/wec-self-print-app-console/item/sp-batch-export/task/create',
-                json=json_data, verify=False
-            )
-            
-            # 获取下载 url
-            url = 'http://zzfwx.nju.edu.cn/wec-self-print-app-console/item/sp-batch-export/task/{}'\
-                .format(res_2.json()['data'])
+        # 获取任务 id
+        res_2 = self.session.post(
+            'http://zzfwx.nju.edu.cn/wec-self-print-app-console/item/sp-batch-export/task/create',
+            json=json_data, verify=False
+        )
+        
+        # 获取下载 url
+        url = 'http://zzfwx.nju.edu.cn/wec-self-print-app-console/item/sp-batch-export/task/{}'\
+            .format(res_2.json()['data'])
 
-            for counter in range(0, 10):
-                time.sleep(3)
-                res_3 = self.session.get(url=url, verify=False)
-                download_url = res_3.json()['downloadUrl']
-                if download_url != None:
-                    return download_url
-            
-            # 30s 仍然无法获得下载链接，结束并返回获取失败
-            log.logger.error('资料下载失败，获取下载链接轮询超时')
-            raise Exception('资料下载失败，获取下载链接超时')
-        except requests.Timeout:
-            log.logger.error('资料下载失败，请求超时')
-            raise Exception('资料下载失败，请求超时，请检查网络连接')
+        for counter in range(0, 10):
+            time.sleep(3)
+            res_3 = self.session.get(url=url, verify=False)
+            download_url = res_3.json()['downloadUrl']
+            if download_url != None:
+                return download_url
+        
+        # 30s 仍然无法获得下载链接，结束并返回获取失败
+        log.logger.error('资料下载失败，获取下载链接轮询超时')
+        raise Exception('资料下载失败，获取下载链接超时')
 
 class fetcher:
     uid = 0
