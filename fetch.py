@@ -306,11 +306,11 @@ class printer:
                 res_3 = res_3.json()
                 
                 # 出现错误信息
-                if not res_3['errorLog']:
+                if res_3['errorLog']:
                     log.logger.error(f'''资料下载失败，服务器返回错误信息：{res_3['errorLog']}''')
                     raise Exception(f'''资料下载失败，服务器返回错误信息：{res_3['errorLog']}''')
                 # 下载成功
-                elif res_3['downloadUrl']:
+                if res_3['downloadUrl']:
                     return res_3['downloadUrl']
             
             # 30s 仍然无法获得下载链接，结束并返回获取失败
