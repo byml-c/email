@@ -303,9 +303,15 @@ class printer:
             for counter in range(0, 10):
                 time.sleep(3)
                 res_3 = self.session.get(url=url, verify=False)
-                download_url = res_3.json()['downloadUrl']
-                if download_url != None:
-                    return download_url
+                res_3 = res_3.json()
+                
+                # 出现错误信息
+                if not res_3['errorLog']:
+                    log.logger.error(f'''资料下载失败，服务器返回错误信息：{res_3['errorLog']}''')
+                    raise Exception(f'''资料下载失败，服务器返回错误信息：{res_3['errorLog']}''')
+                # 下载成功
+                elif res_3['downloadUrl']:
+                    return res_3['downloadUrl']
             
             # 30s 仍然无法获得下载链接，结束并返回获取失败
             log.logger.error('资料下载失败，获取下载链接轮询超时')
